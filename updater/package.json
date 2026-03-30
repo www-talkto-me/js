@@ -1,0 +1,26 @@
+{
+  "name": "@3-/updater",
+  "version": "0.1.7",
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/www-talkto-me/js.git",
+    "directory": "updater"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./lib.js",
+    "./*": "./*"
+  },
+  "dependencies": {
+    "@3-/read": "^0.1.4",
+    "@3-/req": "^0.1.18",
+    "@3-/write": "^0.0.2",
+    "js-yaml": "^4.1.1"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.2"
+  }
+}

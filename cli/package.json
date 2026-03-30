@@ -1,0 +1,43 @@
+{
+  "name": "@talkto-me/cli",
+  "version": "0.2.11",
+  "description": "TalkTo.Me CLI",
+  "keywords": [
+    "bot",
+    "cli",
+    "client",
+    "messenger",
+    "stream"
+  ],
+  "license": "MIT",
+  "author": "code@talkto.me",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/www-talkto-me/js.git",
+    "directory": "clawcli"
+  },
+  "bin": {
+    "talkto.me": "./cli.js"
+  },
+  "files": [
+    "./*"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./main.js",
+    "./*": "./*"
+  },
+  "dependencies": {
+    "@3-/intbin": "^0.1.5",
+    "@3-/sleep": "^0.0.4",
+    "@3-/srv": "^0.1.51",
+    "@3-/updater": "^0.1.7",
+    "@talkto-me/conn": "workspace:*",
+    "ws": "^8.20.0",
+    "yargs": "^18.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "vitest": "^4.1.2"
+  }
+}

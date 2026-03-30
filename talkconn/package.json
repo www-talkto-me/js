@@ -1,0 +1,40 @@
+{
+  "name": "@talkto-me/conn",
+  "version": "0.1.16",
+  "description": "Asymmetric streaming client / 非对称流式通讯客户端",
+  "keywords": [
+    "asymmetric",
+    "cli",
+    "client",
+    "messenger",
+    "stream"
+  ],
+  "license": "MIT",
+  "author": "code@talkto.me",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/www-talkto-me/js.git",
+    "directory": "talkconn"
+  },
+  "bin": {
+    "talkconn": "./cli.js"
+  },
+  "files": [
+    "./*"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./*": "./*"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@3-/sleep": "^0.0.4",
+    "@3-/stream": "workspace:*",
+    "js-yaml": "*"
+  },
+  "devDependencies": {
+    "@3-/intbin": "^0.1.5",
+    "knip": "^6"
+  }
+}

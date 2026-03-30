@@ -1,0 +1,12 @@
+{
+  "$schema": "https://unpkg.com/knip@3/schema.json",
+  "entry": [
+    "sh/**/*.js",
+    "stream/**/*.js",
+    "talkconn/cli.js",
+    "talkconn/index.js",
+    "talkconn/tests/**/*.js",
+  ],
+  "project": ["**/*.js"],
+  "ignoreDependencies": ["@3-/mdt", "oxfmt", "oxlint"],
+}

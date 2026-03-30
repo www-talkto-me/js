@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/z/ai/myaier/js/utf8*)",
+      "Read(//Users/z/ai/myaier/**)",
+      "Bash(npm view:*)",
+      "Bash(npm pack:*)",
+      "Bash(node:*)",
+      "Bash(tar -tf /tmp/3--stream-0.1.20.tgz)",
+      "Bash(tar -xf /tmp/3--stream-0.1.20.tgz -O package/recv.js)"
+    ]
+  }
+}
