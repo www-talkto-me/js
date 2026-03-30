@@ -1,6 +1,6 @@
 {
   "name": "@3-/stream",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "description": "Decode variable-length frames / 解析变长数据包流",
   "keywords": [
     "binary",
