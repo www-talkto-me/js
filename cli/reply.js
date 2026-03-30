@@ -25,6 +25,8 @@ export default (session_prefix, my_uid, token, visitors, pending_id, API, rpc) =
 
   if (!entry) return;
 
+  // OpenClaw 新版网关的 WS 推送精简了结束事件的 payload，不再携带完整的 message。
+  // 因此必须在收到 final 信号后，主动通过 RPC 拉取最后一条完整的助理消息。
   const get_res = await rpc("sessions.get", { key: sessionKey }),
     msgs = get_res.payload?.messages ?? [],
     message = msgs[msgs.length - 1];

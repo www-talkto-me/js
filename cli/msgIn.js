@@ -21,6 +21,7 @@ export default (visitors, pending_id, rpc, onReady) => {
         session_id = target_session?.sessionId;
 
       if (session_id) {
+        // 防止由于手动 rm 删除日志导致的底层 ENOENT 异常卡死 Agent 流，这里强制做基于存在性的确定性同步拦截
         const session_file = join(STATE_DIR, "agents", "main", "sessions", `${session_id}.jsonl`);
         if (!existsSync(session_file)) {
           console.warn(`[确定性拦截] 底层 ${session_file} 丢失，清理幽灵会话...`);
