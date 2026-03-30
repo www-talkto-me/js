@@ -40,22 +40,30 @@ export default (visitors, pending_id, rpc, onReady) => {
     return visitors.get(visitor_id);
   };
 
-  return async ([msg_id, from_id, , text]) => {
+  const handle_msg = async (msg_id, from_id, text, retry_count = 0) => {
     const msg = `${NAME} 访客 ${from_id}: ${text}`,
       visitor_id = String(from_id),
       entry = await ensure(from_id);
 
-    console.log("→", msg);
-
     if (!entry) return;
 
-    await entry.notify(msg, "notify-in-" + msg_id);
+    if (retry_count === 0) {
+      console.log("→", msg);
+      await entry.notify(msg, "notify-in-" + msg_id);
 
-    if (pending_id.has(visitor_id)) {
-      await entry.abort();
+      if (pending_id.has(visitor_id)) {
+        await entry.abort();
+      }
     }
 
-    pending_id.set(visitor_id, msg_id);
+    pending_id.set(visitor_id, {
+      msg_id,
+      retry: retry_count,
+      retry_fn: (next_retry) => handle_msg(msg_id, from_id, text, next_retry),
+    });
+
     await entry.chat(text, msg_id);
   };
+
+  return async ([msg_id, from_id, , text]) => handle_msg(msg_id, from_id, text, 0);
 };

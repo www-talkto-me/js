@@ -25,27 +25,41 @@ export default (session_prefix, my_uid, token, visitors, pending_id, API, rpc) =
 
   if (!entry) return;
 
+  const record = pending_id.get(visitor_id);
+  if (!record) return;
+
+  const { msg_id, retry, retry_fn } = record;
+
   // OpenClaw 新版网关的 WS 推送精简了结束事件的 payload，不再携带完整的 message。
   // 因此必须在收到 final 信号后，主动通过 RPC 拉取最后一条完整的助理消息。
   const get_res = await rpc("sessions.get", { key: sessionKey }),
-    msgs = get_res.payload?.messages ?? [],
+    msgs = get_res?.payload?.messages ?? [],
     message = msgs[msgs.length - 1];
 
-  if (message?.role !== "assistant") return;
-
-  const commit_id = pending_id.get(visitor_id);
+  if (!get_res?.ok || message?.role !== "assistant") {
+    if (retry < 3) {
+      console.warn(`[自动重试] 会话 ${sessionKey} 异常中断或获取回复失败，正在清理残余并进行第 ${retry + 1} 次重试...`);
+      await rpc("sessions.delete", { key: sessionKey }).catch(() => {});
+      visitors.delete(visitor_id);
+      await retry_fn(retry + 1);
+      return;
+    }
+    console.error(`[自动重试] 访客 ${visitor_id} 相关的 ${sessionKey} 连续 3 次获取失败，彻底放弃。`);
+    pending_id.delete(visitor_id);
+    return;
+  }
 
   let i = 0;
   for (const { type: t, text } of message.content ?? []) {
     if (t !== "text") continue;
     const parsed_text = parseResponse(text);
     console.log(parsed_text);
-    await entry.notify(`智能回复: ${parsed_text}`, `o${commit_id}-${++i}`);
+    await entry.notify(`智能回复: ${parsed_text}`, `o${msg_id}-${++i}`);
     await sendMsg(my_uid, token, entry.uid_b64, parsed_text, API);
   }
 
-  if (commit_id) {
-    beginIdSet(my_uid, commit_id);
+  if (msg_id) {
+    beginIdSet(my_uid, msg_id);
   }
   pending_id.delete(visitor_id);
 };
