@@ -1,6 +1,6 @@
 {
   "name": "@talkto-me/conn",
-  "version": "0.1.16",
+  "version": "0.1.19",
   "description": "Asymmetric streaming client / 非对称流式通讯客户端",
   "keywords": [
     "asymmetric",
