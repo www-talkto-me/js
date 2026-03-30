@@ -11,8 +11,11 @@ export default (pkg, ver, config_path, onUpdate) => {
       try {
         const install = await update(pkg, ver, config_path);
         if (timer && install) {
-          install();
-          onUpdate?.();
+          const child = install();
+          if (child?.on) {
+            await new Promise((resolve) => child.on("exit", resolve));
+          }
+          if (timer) await onUpdate?.();
         }
       } finally {
         if (timer) {

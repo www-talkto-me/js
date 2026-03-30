@@ -5,6 +5,7 @@ export default (sendRpc, visitor_id) => {
   const session_key = `agent:main:${NAME}:${visitor_id}`,
     notify = (msg, id_key) => send(sendRpc, msg, session_key, id_key),
     abort = () => sendRpc("chat.abort", { sessionKey: session_key }),
+    reset = () => sendRpc("sessions.delete", { key: session_key }),
     chat = (push_msg, idempotencyKey) =>
       sendRpc("chat.send", {
         sessionKey: session_key,
@@ -12,5 +13,5 @@ export default (sendRpc, visitor_id) => {
         idempotencyKey: String(idempotencyKey),
       });
 
-  return [session_key, notify, chat, abort];
+  return [session_key, notify, chat, abort, reset];
 };

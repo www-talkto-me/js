@@ -6,7 +6,7 @@ import reconnect from "./reconnect.js";
 import pkg from "../const/PACKAGE.js";
 
 const { version } = pkg,
-  SCOPES = ["operator.read", "operator.write"],
+  SCOPES = ["operator.read", "operator.write", "operator.admin"],
   dial = async () => {
     const { token, ws_url, device } = loadConf(),
       ws = new WebSocket(ws_url),

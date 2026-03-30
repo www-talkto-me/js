@@ -16,6 +16,12 @@ yargs(hideBin(process.argv))
     () => {},
     async () => (await import("./init.js")).default(),
   )
+  .command(
+    "upgrade",
+    "升级",
+    () => {},
+    async () => (await import("./upgrade.js")).default(),
+  )
   .command("srv", "系统服务", (y) =>
     y
       .command(
@@ -29,6 +35,12 @@ yargs(hideBin(process.argv))
         "卸载系统服务",
         () => {},
         async () => (await import("@3-/srv/uninstall.js")).default(NAME, () => {}),
+      )
+      .command(
+        "clean",
+        "清理损坏幽灵会话",
+        () => {},
+        async () => (await import("./srv/clean.js")).default(),
       )
       .demandCommand(1, ""),
   )
