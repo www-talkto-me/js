@@ -35,22 +35,25 @@ export default async () => {
 
   listenWs();
 
-  try {
-    for await (const [kind, data] of req(
-      MY_UID,
-      `${API}claw/cli/${MY_UID}`,
-      { headers: { t: TOKEN } },
-      beginIdGet,
-      () => {},
-    )) {
-      console.log("网页长连接 →", kind, data);
-      if (kind === KIND_MSG_LI) {
-        for (const row of data) await handleRow(row);
-      } else if (kind === KIND_MSG) {
-        await handleRow(data);
+  for (;;) {
+    try {
+      for await (const [kind, data] of req(
+        MY_UID,
+        `${API}claw/cli/${MY_UID}`,
+        { headers: { t: TOKEN } },
+        beginIdGet,
+        () => {},
+      )) {
+        console.log("网页长连接 →", kind, data);
+        if (kind === KIND_MSG_LI) {
+          for (const row of data) await handleRow(row);
+        } else if (kind === KIND_MSG) {
+          await handleRow(data);
+        }
       }
+    } catch (e) {
+      console.error("网页长连接异常:", e);
+      await new Promise((r) => setTimeout(r, 3000));
     }
-  } catch (e) {
-    console.error(e);
   }
 };
