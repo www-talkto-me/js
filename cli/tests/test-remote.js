@@ -15,24 +15,43 @@ const test = async () => {
   console.log("连接已就绪！");
 
   console.log("获取会话列表...");
-  const res = await rpc("sessions.list");
-  console.log("会话列表响应:", JSON.stringify(res, null, 2));
-
-  if (res.payload?.sessions) {
-    const brokenSession = res.payload.sessions.find(s => s.key === "agent:main:talkto.me:0");
-    if (brokenSession) {
-      console.log(`尝试获取可能损坏的 session 详情: ${brokenSession.key}`);
-      const getRes = await rpc("sessions.get", { key: brokenSession.key });
-      console.log("获取结果:", JSON.stringify(getRes, null, 2));
-    }
+  console.log("尝试给这个 session 发起全面消息流订阅...");
+  try {
+    const subRes = await rpc("sessions.messages.subscribe", { key: "agent:main:talkto.me:0" });
+    console.log("详细消息流订阅结果:", subRes);
+  } catch (err) {
+    console.warn("sessions.messages.subscribe 不存在:", err);
   }
 
-  process.exit(0);
   const ws = wsFn();
-  ws.on('message', (msg) => {
-    console.log("收到 OpenClaw 消息:", msg.toString());
+  ws.on('message', async (msg) => {
+    const raw = msg.toString();
+    console.log("WS事件:", raw);
+    try {
+      const data = JSON.parse(raw);
+      if (data.type === "event" && data.event === "chat" && data.payload?.state === "final") {
+        console.log("检测到 final，正在拉取最新消息...");
+        const getRes = await rpc("sessions.get", { key: data.payload.sessionKey });
+        if (getRes.ok) {
+          const msgs = getRes.payload?.messages ?? [];
+          const lastMsg = msgs[msgs.length - 1];
+          console.log("最后一条消息是:", JSON.stringify(lastMsg, null, 2));
+          process.exit(0);
+        }
+      }
+    } catch {}
   });
 
+  console.log("发出 chat.send 然后等待...");
+  const sendRes = await rpc("chat.send", {
+    sessionKey: "agent:main:talkto.me:0",
+    message: "/talkto_me 第二次测试",
+    idempotencyKey: Date.now().toString()
+  });
+  console.log("发送结果:", sendRes);
+
+  await new Promise(r => setTimeout(r, 10000));
+  process.exit(0);
   setTimeout(() => {
     console.log("测试结束");
     process.exit(0);

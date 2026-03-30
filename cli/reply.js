@@ -1,3 +1,4 @@
+
 import sendMsg from "@talkto-me/conn/send.js";
 import { set as beginIdSet } from "@talkto-me/conn/begin_id.js";
 
@@ -12,16 +13,23 @@ const parseResponse = (text) => {
   return "";
 };
 
-export default (session_prefix, my_uid, token, visitors, pending_id, API) => async (data) => {
+export default (session_prefix, my_uid, token, visitors, pending_id, API, rpc) => async (data) => {
   const { payload } = JSON.parse(data),
-    { state, sessionKey, message } = payload ?? {};
+    { state, sessionKey } = payload ?? {};
 
   if (!sessionKey?.startsWith(session_prefix)) return;
-  if (state !== "final" || message?.role !== "assistant") return;
+  if (state !== "final") return;
 
   const visitor_id = sessionKey.slice(session_prefix.length),
     entry = visitors.get(visitor_id);
+
   if (!entry) return;
+
+  const get_res = await rpc("sessions.get", { key: sessionKey }),
+    msgs = get_res.payload?.messages ?? [],
+    message = msgs[msgs.length - 1];
+
+  if (message?.role !== "assistant") return;
 
   const commit_id = pending_id.get(visitor_id);
 

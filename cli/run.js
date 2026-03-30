@@ -21,7 +21,7 @@ export default async () => {
   const VISITORS = new Map(),
     PENDING_ID = new Map(),
     [rpc, onReady, ws] = initWs(),
-    onMsg = reply(SESSION_PREFIX, MY_UID, TOKEN, VISITORS, PENDING_ID, API),
+    onMsg = reply(SESSION_PREFIX, MY_UID, TOKEN, VISITORS, PENDING_ID, API, rpc),
     handleRow = msgIn(VISITORS, PENDING_ID, rpc, onReady),
     listenWs = async () => {
       for (;;) {
