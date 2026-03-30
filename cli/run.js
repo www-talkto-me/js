@@ -2,6 +2,7 @@
 
 import initWs from "./conn/ws.js";
 import req from "@3-/stream/req.js";
+import sleep from "@3-/sleep";
 import reply from "./reply.js";
 import msgIn from "./msgIn.js";
 import NAME from "./const/NAME.js";
@@ -53,7 +54,7 @@ export default async () => {
       }
     } catch (e) {
       console.error("网页长连接异常:", e);
-      await new Promise((r) => setTimeout(r, 3000));
+      await sleep(3000);
     }
   }
 };
