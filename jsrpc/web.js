@@ -11,26 +11,28 @@ const formatRet = (ret) =>
       : `/**\n${indent} * ${lines.join(`\n${indent} * `)}\n${indent} */`,
   paramName = (p) => (p || "").split("=")[0].trim();
 
-export default (li, file_path) => {
-  const prefix = file_path.slice(0, -3),
-    [default_export, named_exports] = li.reduce(
-      (acc, item) => {
-        const [def_exp, named_exps] = acc,
-          [name, params, returns] = item,
-          is_uid = paramName(params[0]) === "uid",
-          wrapper_params = is_uid ? params.slice(1) : params,
-          doc_lines = [...(is_uid ? ["@required signin"] : []), `@return ${formatRetList(returns)}`],
-          arg_list = wrapper_params.join(", "),
-          call_args = wrapper_params.map(paramName).join(", "),
-          func_path = name === "default" ? prefix : `${prefix}/${name}`,
-          body = `Fn('${func_path}'${call_args ? `, ${call_args}` : ""})`;
+export default (prefix, li) => {
+  const [default_export, named_exports] = li.reduce(
+    (acc, item) => {
+      const [def_exp, named_exps] = acc,
+        [name, params, returns] = item,
+        is_uid = paramName(params[0]) === "uid",
+        wrapper_params = is_uid ? params.slice(1) : params,
+        doc_lines = [...(is_uid ? ["@required signin"] : []), `@return ${formatRetList(returns)}`],
+        arg_list = wrapper_params.join(", "),
+        call_args = wrapper_params.map(paramName).join(", "),
+        func_path = `${prefix}/${name === "default" ? "" : name}`,
+        body = `Fn('${func_path}'${call_args ? `, ${call_args}` : ""})`;
 
-        return name === "default"
-          ? [`\n${makeDoc(doc_lines)}\nexport default (${arg_list}) => ${body};\n`, named_exps]
-          : [def_exp, [...named_exps, `${makeDoc(doc_lines, "  ")}\n  ${name} = (${arg_list}) => ${body}`]];
-      },
-      ["", []]
-    );
+      return name === "default"
+        ? [`\n${makeDoc(doc_lines)}\nexport default (${arg_list}) => ${body};\n`, named_exps]
+        : [
+            def_exp,
+            [...named_exps, `${makeDoc(doc_lines, "  ")}\n  ${name} = (${arg_list}) => ${body}`],
+          ];
+    },
+    ["", []],
+  );
 
   return (
     `import Fn from 'x/Fn.js';\n` +

@@ -1,10 +1,7 @@
 #!/usr/bin/env bun
-import read from "@3-/read";
 import { join } from "node:path";
-import parse from "../parse.js";
-import gen from "../web.js";
+import gen from "../gen.js";
 
-const ROOT = import.meta.dirname,
-  filename = "abc.js",
-  li = parse(read(join(ROOT, filename)));
-console.log(gen(li, filename));
+const ROOT = import.meta.dirname;
+
+console.log(await gen(join(ROOT, "fn"), join(ROOT, "web")));

@@ -6,4 +6,4 @@ import parse from "../parse.js";
 
 const ROOT = import.meta.dirname;
 
-console.log(JSON.stringify(parse(read(join(ROOT, "abc.js"))), null, 2));
+console.log(JSON.stringify(parse(read(join(ROOT, "fn/abc.js"))), null, 2));

@@ -4,7 +4,7 @@ export default async (a, b, c = 1) => {
 };
 
 export const add = async (a, b) => {
-    console.log(1);
+    console.log(a - b);
   },
   rm = async (uid) => {
     return uid;

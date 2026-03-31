@@ -1,26 +1,11 @@
-/*
+export default (name, li) => {
+  name = JSON.stringify(name);
+  const signed = [];
 
-const RPC = new Map, route = (name, ...wrap)=>{
-  if(!RPC.has(name)) RPC.set(name, wrap)
+  li.forEach(([fn, [arg0, ...args]]) => {
+    if (arg0 == "uid") {
+      signed.push(fn);
+    }
+  });
+  return "load(" + name + ",new Set[" + JSON.stringify(signed) + "))";
 };
-
-[
-  [
-    'default',
-    signed
-  ],
-  [
-    'star',
-    signed
-  ]
-].map(route)
-
-返回值设计
-
-  [
-    [0,正常],
-    [0,正常],
-    [错误码,错误信息],
-  ]
-
-*/
