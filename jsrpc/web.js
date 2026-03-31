@@ -5,52 +5,41 @@ const formatRet = (ret) =>
       ? `[${ret.map(formatRet).join(", ")}]`
       : String(ret);
 
-const formatRetList = (retList) =>
-  !retList || !retList.length ? "void" : retList.map(formatRet).join(" | ");
+const formatRetList = (ret_list) =>
+  !ret_list?.length ? "void" : ret_list.map(formatRet).join(" | ");
 
-export default (li) => {
-  let defaultExport = "";
-  const namedExports = [];
+const makeDoc = (lines, indent = "") =>
+  lines.length === 1
+    ? `/** ${lines[0]} */`
+    : `/**\n${indent} * ${lines.join(`\n${indent} * `)}\n${indent} */`;
+
+export default (li, file_path) => {
+  let default_export = "",
+    result = `import Fn from 'x/Fn.js';\n`;
+  const named_exports = [],
+    prefix = file_path.slice(0, -3);
 
   for (const [name, params, returns] of li) {
-    let requiresSignin = false;
-    const wrapperParams = [...params];
+    const is_uid = params[0]?.split("=")[0].trim() === "uid",
+      wrapper_params = is_uid ? params.slice(1) : params,
+      doc_lines = is_uid ? ["@required signin"] : [];
 
-    if (wrapperParams.length > 0 && wrapperParams[0].split("=")[0].trim() === "uid") {
-      requiresSignin = true;
-      wrapperParams.shift();
-    }
+    doc_lines.push(`@return ${formatRetList(returns)}`);
 
-    const rawArgs = wrapperParams.map((p) => p.split("=")[0].trim()),
-      argList = wrapperParams.join(", "),
-      callArgs = rawArgs.join(", "),
-      retText = formatRetList(returns);
-
-    const docLines = [];
-    if (requiresSignin) docLines.push("@required signin");
-    docLines.push(`@return ${retText}`);
-
-    const jsdocStr =
-      docLines.length === 1
-        ? `/** ${docLines[0]} */`
-        : `/**\n   * ${docLines.join("\n   * ")}\n   */`;
-
-    // adjust jsdoc indentation for default vs named
-    const jsdocDefault =
-      docLines.length === 1 ? `/** ${docLines[0]} */` : `/**\n * ${docLines.join("\n * ")}\n */`;
-
-    const body = `Fn(${callArgs})`;
+    const arg_list = wrapper_params.join(", "),
+      call_args = wrapper_params.map((p) => p.split("=")[0].trim()).join(", "),
+      func_path = name === "default" ? prefix : `${prefix}/${name}`,
+      body = call_args ? `Fn('${func_path}', ${call_args})` : `Fn('${func_path}')`;
 
     if (name === "default") {
-      defaultExport = `\n${jsdocDefault}\nexport default (${argList}) => ${body};\n`;
+      default_export = `\n${makeDoc(doc_lines)}\nexport default (${arg_list}) => ${body};\n`;
     } else {
-      namedExports.push(`${jsdocStr}\n  ${name} = (${argList}) => ${body}`);
+      named_exports.push(`${makeDoc(doc_lines, "  ")}\n  ${name} = (${arg_list}) => ${body}`);
     }
   }
 
-  let result = `import Fn from 'x/Fn.js';\n`;
-  if (defaultExport) result += defaultExport;
-  if (namedExports.length > 0) result += `\nexport const\n  ${namedExports.join(",\n\n  ")};\n`;
+  if (default_export) result += default_export;
+  if (named_exports.length) result += `\nexport const\n  ${named_exports.join(",\n\n  ")};\n`;
 
   return result;
 };

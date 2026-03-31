@@ -4,6 +4,7 @@ import { join } from "node:path";
 import parse from "../parse.js";
 import gen from "../web.js";
 
-const ROOT = import.meta.dirname;
-const li = parse(read(join(ROOT, "abc.js")));
-console.log(gen(li));
+const ROOT = import.meta.dirname,
+  filename = "abc.js",
+  li = parse(read(join(ROOT, filename)));
+console.log(gen(li, filename));
