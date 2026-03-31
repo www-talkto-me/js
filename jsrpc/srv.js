@@ -7,5 +7,5 @@ export default (name, li) => {
       signed.push(fn);
     }
   });
-  return "load(" + name + ",new Set[" + JSON.stringify(signed) + "))";
+  return "load(" + name + ",new Set(" + JSON.stringify(signed) + "))";
 };
