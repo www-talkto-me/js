@@ -1,28 +1,12 @@
 #!/usr/bin/env bun
 
 import { walkRel } from "@3-/walk";
-import read from "@3-/read";
-import write from "@3-/write";
-import parse from "./parse.js";
-import { join } from "node:path";
-import web from "./web.js";
-import srv from "./srv.js";
+import build from "./build.js";
 
 export default async (dir, web_dir, srvSave) => {
   const fp_li = [];
-  for await (const fp of walkRel(dir, (fp) => {
-    return "._".includes(fp[0]);
-  })) {
-    if (fp.endsWith(".js")) {
-      fp_li.push(fp);
-    }
+  for await (const fp of walkRel(dir, (fp) => "._".includes(fp[0]))) {
+    if (fp.endsWith(".js")) fp_li.push(fp);
   }
-  const srv_js = [];
-  for (const fp of fp_li) {
-    const li = parse(read(join(dir, fp))),
-      key = fp.slice(0, -3);
-    write(join(web_dir, fp), web(key, li));
-    srv_js.push(srv(key, li));
-  }
-  srvSave(srv_js.join("\n"));
+  build(fp_li, dir, web_dir, srvSave);
 };

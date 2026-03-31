@@ -10,6 +10,10 @@
     "directory": "jsrpc"
   },
   "type": "module",
+  "bin": {
+    "jsrpc_gen": "bin/gen.js",
+    "jsrpc_watch": "bin/watch.js"
+  },
   "exports": {
     ".": "./lib.js",
     "./*": "./*"
@@ -18,7 +22,9 @@
     "@3-/walk": "^0.2.1",
     "@3-/write": "^0.0.2",
     "@babel/parser": "^7.29.2",
-    "@babel/traverse": "^7.29.0"
+    "@babel/traverse": "^7.29.0",
+    "chokidar": "^5.0.0",
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@3-/read": "^0.1.4"

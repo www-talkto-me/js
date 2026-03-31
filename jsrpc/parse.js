@@ -32,9 +32,8 @@ export default (js) => {
   traverse(ast, {
     ArrowFunctionExpression: (path) => {
       const { node, parent, parentPath } = path,
-        params = node.params,
-        body = node.body,
-        type = parent.type,
+        { params, body } = node,
+        { type } = parent,
         is_default = type === "ExportDefaultDeclaration",
         is_named =
           type === "VariableDeclarator" &&
@@ -52,8 +51,9 @@ export default (js) => {
         });
 
         if (body.type === "BlockStatement") {
-          const last_stmt = body.body[body.body.length - 1];
-          if (!last_stmt || last_stmt.type !== "ReturnStatement") {
+          const { body: stmts } = body,
+            last_stmt = stmts[stmts.length - 1];
+          if (last_stmt?.type !== "ReturnStatement") {
             parsed_returns.push(undefined);
           }
         }
