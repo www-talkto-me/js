@@ -1,5 +1,11 @@
 {
-  "workspaces": ["cli", "stream", "talkconn", "updater"],
+  "workspaces": [
+    "cli",
+    "jsrpc",
+    "stream",
+    "talkconn",
+    "updater"
+  ],
   "type": "module",
   "dependencies": {
     "@3-/base64url": "^0.1.3",
