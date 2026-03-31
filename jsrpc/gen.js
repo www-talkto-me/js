@@ -8,7 +8,7 @@ import { join } from "node:path";
 import web from "./web.js";
 import srv from "./srv.js";
 
-export default async (dir, web_dir) => {
+export default async (dir, web_dir, srvSave) => {
   const srv_js = [];
   for await (const fp of walkRel(dir)) {
     const li = parse(read(join(dir, fp))),
@@ -16,5 +16,5 @@ export default async (dir, web_dir) => {
     write(join(web_dir, fp), web(key, li));
     srv_js.push(srv(key, li));
   }
-  return srv_js.join("\n");
+  srvSave(srv_js.join("\n"));
 };

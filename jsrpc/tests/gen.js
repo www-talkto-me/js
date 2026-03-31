@@ -4,4 +4,6 @@ import gen from "../gen.js";
 
 const ROOT = import.meta.dirname;
 
-console.log(await gen(join(ROOT, "fn"), join(ROOT, "web")));
+await gen(join(ROOT, "fn"), join(ROOT, "web"), (srv) => {
+  console.log(srv);
+});
