@@ -1,6 +1,6 @@
 {
   "name": "@3-/jsrpc",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -23,9 +23,8 @@
     "@babel/parser": "^7.29.2",
     "@babel/traverse": "^7.29.0",
     "chokidar": "^5.0.0",
+    "@3-/read": "^0.1.4",
     "yargs": "^18.0.0"
   },
-  "devDependencies": {
-    "@3-/read": "^0.1.4"
-  }
+  "devDependencies": {}
 }
