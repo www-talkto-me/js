@@ -10,7 +10,7 @@ const {
     dir,
     web_dir,
     srv_save,
-    watch: isWatch
+    watch: isWatch,
   } = yargs(hideBin(process.argv))
     .option("dir", { type: "string", demandOption: true })
     .option("web_dir", { type: "string", demandOption: true })

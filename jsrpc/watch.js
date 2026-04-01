@@ -12,7 +12,7 @@ export default async (dir, web_dir, srvSave) => {
         [...srv_cache.keys()]
           .sort()
           .map((k) => srv_cache.get(k))
-          .join("\n")
+          .join("\n"),
       ),
     watcher = watch(dir, { ignoreInitial: true });
 

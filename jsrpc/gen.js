@@ -23,6 +23,6 @@ export default async (dir, web_dir, srvSave) => {
         write(join(web_dir, fp), web_str);
         return srv_str;
       })
-      .join("\n")
+      .join("\n"),
   );
 };

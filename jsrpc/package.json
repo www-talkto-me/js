@@ -1,6 +1,6 @@
 {
   "name": "@3-/jsrpc",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -9,10 +9,10 @@
     "url": "git+https://github.com/www-talkto-me/js.git",
     "directory": "jsrpc"
   },
-  "type": "module",
   "bin": {
     "jsrpc": "bin/jsrpc.js"
   },
+  "type": "module",
   "exports": {
     ".": "./lib.js",
     "./*": "./*"

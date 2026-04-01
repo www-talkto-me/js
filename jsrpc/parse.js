@@ -12,17 +12,37 @@ const paramStr = (p) => {
 
 const retNodeStr = (node) => {
   if (!node) return undefined;
-  const { type, elements, value, name } = node;
-  return type === "ArrayExpression"
-    ? elements.map((e) => {
-        const { type: e_type, left, operator, right } = e;
-        return e_type === "BinaryExpression" ? `${left.name} ${operator} ${right.name}` : "unknown";
-      })
-    : type === "NumericLiteral"
-      ? value
-      : type === "Identifier"
-        ? name
-        : "unknown";
+  const { type, elements, value, name, left, operator, right } = node;
+  switch (type) {
+    case "ArrayExpression":
+      return elements.map(retNodeStr);
+    case "BinaryExpression":
+      return `${retNodeStr(left)} ${operator} ${retNodeStr(right)}`;
+    case "NumericLiteral":
+      return value;
+    case "StringLiteral":
+      return `"${value}"`;
+    case "Identifier":
+      return name;
+    default:
+      return "unknown";
+  }
+};
+
+const exportedFnName = (node, parent, parentPath) => {
+  const { type } = parent;
+  switch (type) {
+    case "ExportDefaultDeclaration":
+      return "default";
+    case "VariableDeclarator":
+      return parentPath.parentPath?.parent?.type === "ExportNamedDeclaration"
+        ? parent.id.name
+        : undefined;
+    case "ExportNamedDeclaration":
+      return node.id?.name;
+    default:
+      return undefined;
+  }
 };
 
 export default (js) => {
@@ -30,17 +50,12 @@ export default (js) => {
     results = [];
 
   traverse(ast, {
-    ArrowFunctionExpression: (path) => {
+    "ArrowFunctionExpression|FunctionExpression|FunctionDeclaration": (path) => {
       const { node, parent, parentPath } = path,
-        { params, body } = node,
-        { type } = parent,
-        is_default = type === "ExportDefaultDeclaration",
-        is_named =
-          type === "VariableDeclarator" &&
-          parentPath.parentPath?.parent?.type === "ExportNamedDeclaration";
+        fn_name = exportedFnName(node, parent, parentPath);
 
-      if (is_default || is_named) {
-        const fn_name = is_default ? "default" : parent.id.name,
+      if (fn_name) {
+        const { params, body } = node,
           parsed_params = params.map(paramStr),
           parsed_returns = [];
 

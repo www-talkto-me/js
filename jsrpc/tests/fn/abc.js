@@ -3,6 +3,10 @@ export default async (a, b, c = 1) => {
   return [a + b, c + a];
 };
 
+export const functionName = async function (a, b, c) {
+  return a + b + c;
+};
+
 export const add = async (a, b) => {
     console.log(a - b);
   },
