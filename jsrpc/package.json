@@ -1,6 +1,6 @@
 {
   "name": "@3-/jsrpc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -11,8 +11,7 @@
   },
   "type": "module",
   "bin": {
-    "jsrpc_gen": "bin/gen.js",
-    "jsrpc_watch": "bin/watch.js"
+    "jsrpc": "bin/jsrpc.js"
   },
   "exports": {
     ".": "./lib.js",
