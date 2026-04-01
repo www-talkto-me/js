@@ -3,11 +3,14 @@ import traverse from "@babel/traverse";
 
 const paramStr = (p) => {
   const { type, name, left, right } = p;
-  return type === "Identifier"
-    ? name
-    : type === "AssignmentPattern"
-      ? `${left.name} = ${right.value}`
-      : "unknown";
+  switch (type) {
+    case "Identifier":
+      return name;
+    case "AssignmentPattern":
+      return `${left.name} = ${right.value}`;
+    default:
+      return "unknown";
+  }
 };
 
 const retNodeStr = (node) => {
@@ -29,13 +32,13 @@ const retNodeStr = (node) => {
   }
 };
 
-const exportedFnName = (node, parent, parentPath) => {
+const exportedFnName = (node, parent, parent_path) => {
   const { type } = parent;
   switch (type) {
     case "ExportDefaultDeclaration":
       return "default";
     case "VariableDeclarator":
-      return parentPath.parentPath?.parent?.type === "ExportNamedDeclaration"
+      return parent_path.parentPath?.parent?.type === "ExportNamedDeclaration"
         ? parent.id.name
         : undefined;
     case "ExportNamedDeclaration":
@@ -51,8 +54,8 @@ export default (js) => {
 
   traverse(ast, {
     "ArrowFunctionExpression|FunctionExpression|FunctionDeclaration": (path) => {
-      const { node, parent, parentPath } = path,
-        fn_name = exportedFnName(node, parent, parentPath);
+      const { node, parent, parentPath: parent_path } = path,
+        fn_name = exportedFnName(node, parent, parent_path);
 
       if (fn_name) {
         const { params, body } = node,
