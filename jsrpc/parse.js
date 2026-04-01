@@ -9,7 +9,7 @@ const paramStr = (p) => {
     case "AssignmentPattern":
       return `${left.name} = ${right.value}`;
     default:
-      return "unknown";
+      return "";
   }
 };
 
@@ -28,7 +28,7 @@ const retNodeStr = (node) => {
     case "Identifier":
       return name;
     default:
-      return "unknown";
+      return "";
   }
 };
 
