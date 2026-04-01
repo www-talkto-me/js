@@ -20,8 +20,8 @@ const {
   save_path = isAbsolute(srv_save) ? srv_save : join(process.cwd(), srv_save),
   { default: srvSave } = await import(save_path);
 
+await gen(dir, web_dir, srvSave);
+
 if (isWatch) {
   await watch(dir, web_dir, srvSave);
-} else {
-  await gen(dir, web_dir, srvSave);
 }
