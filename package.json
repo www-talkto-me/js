@@ -2,6 +2,7 @@
   "workspaces": [
     "cli",
     "jsrpc",
+    "openclaw_api",
     "stream",
     "talkconn",
     "updater"
